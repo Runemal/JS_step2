@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css?family=Marck+Script&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Kurale&display=swap');
+
+body {
+    background-color: #f8f8f8;
+    font-family: 'Kurale', cursive;
+}
+
+.container {
+    width: 1024px;
+    margin: 0 auto;
+}
+
+.header {
+    width: inherit;
+    height: 100px;
+    display: inline-block;
+/*    background-image: url(img/header.png)*/
+}
+
+.logo {
+    float: left;
+    margin-left: 50px;
+    margin-top: 5px;
+}
+
+.menu {
+    text-align: center;
+    font-size: 35px;
+    font-style: oblique;
+    float: right;
+    margin-top: 25px;
+}
+
+.menu a {
+    margin-right: 25px;
+    color: steelblue;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    color: darkseagreen;
+}
+
+.cart-button {
+    font-family: 'Kurale', cursive;
+    color: steelblue;
+    text-decoration: none;
+    text-align: center;
+    font-size: 35px;
+    font-style: oblique;
+    margin-right: 25px;
+    border: 1px solid black;
+}
+
+.cart-button:hover {
+    color: darkseagreen;
+    border-radius: 25px;
+}
+
+.goods-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+.goods-item {
+    float: left;
+    width: 150px;
+    height: 250px;
+    text-align: center;
+    margin: 15px;
+}
+
+.add-button {
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: darkseagreen;
+}
+
+.add-button:hover {
+    background-color: cadetblue;
+    color: steelblue;
+}
+
+.add-button:active {
+    background-color: steelblue;
+}
+
+.footer {
+    background-color: gainsboro;
+    height: 25px;
+    margin-right: 50px;
+    margin-top: 15px;
+    float: right;
+}
