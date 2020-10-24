@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>eShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header">
+                <div class="logo"><a href="#"><img src="img/logo_crete.png" alt="LOGO"></a></div>
+                <div class="menu">
+                    <a href="#">Главная</a>
+                    <a href="#">Каталог</a>
+                    <a href="#">Контакты</a>
+                    <button class="cart-button" type="button">Корзина</button>
+                </div>
+
+            </div>
+
+
+            <div>
+                <form class="form-search">
+                <input type="text" id="searchLine" class="searchLine" v-model="searchLine">
+            <input class="btn" type="button" value="Найти" id="submit" v-on:click="filterGoods">
+            <input class="btn" type="button" value="Очистить поиск" id="clear-filter" v-on:click="clearfilterGoods">
+
+                </form>
+            </div>
+            <hr>
+            <main class="catalog">
+                <div class="goods-list">
+                    <div v-if="goods.length !== 0" class="goods-list">
+                        <goods-item class="goods-item" v-for="good in goods" :key="good.id_product" :good="good">
+                            <img src="img/logo.png" alt="${this.product_name}" height="50" width="50">
+                            <h3>{{ good.product_name }}</h3>
+                            <p>{{ good.price }}</p>
+                            <button class="add-button" type="add-button" v-on:click="addProduct">Добавить</button>
+                        </goods-item>
+                    </div>
+                    <div v-else class="goods-list">
+                        <span>Нет данных</span>
+                    </div>
+
+                </div>
+            </main>
+
+            <hr>
+            <div id='footer' class="footer">
+                {{ footer }}
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+            <script src="script.js"></script>
+            <!--        <script src="humburger.js"></script>-->
+        </div>
+    </div>
+</body></html>
