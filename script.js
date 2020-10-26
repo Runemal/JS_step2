@@ -1,11 +1,12 @@
 const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-let app = new Vue ({
+let app = new Vue({
     el: '#app',
 
     data: {
         goods: [],
         filteredGoods: [],
+        isCartVisible: false,
         basket: [],
         searchLine: '',
         footer: '© Все права защищены.',
@@ -31,60 +32,57 @@ let app = new Vue ({
             });
         },
 
-        addProducts(good){
-            this.basket.push(good);
-
-        },
-
-        deleteProducts (good){
-            this.basket = this.basket.filter(item => item !== good);
-            let arrToString = '';
-            for (const item of this.basket) {
-                if (item == this.basket[this.basket.length - 1]){
-                    arrToString += JSON.stringify(item);
-                }else {
-                    arrToString += JSON.stringify(item) + ',';
+        addProduct(good) {
+            if (!this.basket.some((gd) => {
+                if (gd.id_product === good.id_product) {
+                    gd.amount++;
+                    return true;
                 }
+            })) {
+                this.basket.push({ ...good, amount: 1 });
             }
         },
-
-        filterGoods () {
-            let text = this.searchLine.toLowerCase().trim();
-            if (text === '') {
-                this.filteredGoods = this.goods;
-            } else {
-                this.filteredGoods = this.goods.filter((el) => {
-                    return el.title.toLowerCase().includes(text);
-                });
+        
+        delProduct(idx) {
+            this.basket[idx].amount--;
+            if (this.basket[idx].amount === 0) {
+                this.basket.splice(idx, 1);
             }
         },
-
-        clearfilterGoods(){
+    
+        clearfilterGoods() {
             this.filteredGoods = this.goods;
             this.searchLine = '';
+        },
+        filterGoods() {
+            const regex = new RegExp(this.searchLine, 'i');
+            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
         },
 
     },
 
     computed: {
-        sumGoods: function () {
-            let sum = 0;
-            this.basket.forEach(({price}) => {
-                sum += price;
-            });
-            return this.sumGood = sum;
+//        filterGoods() {
+//            const regex = new RegExp(this.searchLine, 'i');
+//            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
+//        },
+        cartSumm() {
+            return this.basket.reduce((summ, good) => summ+good.amount*good.price, 0);
+        },
+        cartAmount() {
+            return this.basket.reduce((summ, good) => summ+good.amount, 0);
+        },
+        isCartEmpty() {
+            return this.basket.length === 0;
         },
 
-        sumItem: function () {
-            return this.basket.length==0 ? '   ' :this.basket.length;
-        }
     },
 
-    mounted () {
+    mounted() {
         this.makeGETRequest(`${API_URL}/catalogData.json`, (goods) => {
+            console.log(goods);
             this.goods = JSON.parse(goods);
             this.filteredGoods = JSON.parse(goods);
         });
-    }
+    }, 
 });
-

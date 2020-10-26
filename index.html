@@ -15,7 +15,7 @@
                     <a href="#">Главная</a>
                     <a href="#">Каталог</a>
                     <a href="#">Контакты</a>
-                    <button class="cart-button" type="button">Корзина</button>
+                    <button class="cart-button" type="button" @click="isCartVisible = !isCartVisible">Корзина</button>
                 </div>
 
             </div>
@@ -23,27 +23,46 @@
 
             <div>
                 <form class="form-search">
-                <input type="text" id="searchLine" class="searchLine" v-model="searchLine">
-            <input class="btn" type="button" value="Найти" id="submit" v-on:click="filterGoods">
-            <input class="btn" type="button" value="Очистить поиск" id="clear-filter" v-on:click="clearfilterGoods">
+                <input type="text"  class="goods-search" v-model="searchLine">
+                <input type="button" class="search-button" value="Поиск" id="filter" @click="filterGoods" >
+            <input class="btn" type="button" value="Очистить поиск" id="clear-filter" @click="clearfilterGoods">
 
                 </form>
             </div>
             <hr>
             <main class="catalog">
+               <div class="cart" v-if="isCartVisible">
+                  <h2 v-if="isCartEmpty">Корзина пуста</h2>
+                  <div v-else>
+                   <h2>Корзина всего товаров {{cartAmount}} на сумму {{cartSumm}} рублей.</h2>
+                   <div class="goods-list" v-for="(good, idx) in basket">
+                           <img src="img/logo.png" alt="${this.product_name}" height="50" width="50">
+                            <h3>{{ good.product_name }}</h3>
+                            <p>Цена: {{ good.price }}</p>
+                            <p>Количество: {{ good.amount }}</p>
+                            <p>Сумма: {{ good.amount * good.price }}</p>
+                            <button class="del-button" type="button" @click="delProduct(idx)">Удалить</button>
+                   </div>
+                   
+                   </div>
+               </div>
                 <div class="goods-list">
-                    <div v-if="goods.length !== 0" class="goods-list">
-                        <goods-item class="goods-item" v-for="good in goods" :key="good.id_product" :good="good">
+                
+                <div v-if="filteredGoods.length > 0">
+                
+                <div class="goods-item" v-for="good in filteredGoods">
                             <img src="img/logo.png" alt="${this.product_name}" height="50" width="50">
                             <h3>{{ good.product_name }}</h3>
                             <p>{{ good.price }}</p>
-                            <button class="add-button" type="add-button" v-on:click="addProduct">Добавить</button>
-                        </goods-item>
-                    </div>
-                    <div v-else class="goods-list">
-                        <span>Нет данных</span>
+                            <button class="add-button" type="add-button" @click="addProduct(good)">Добавить</button>
                     </div>
 
+                </div>
+                <div v-else>
+                        <span>Нет данных</span>
+                    </div>
+                    
+                    
                 </div>
             </main>
 
