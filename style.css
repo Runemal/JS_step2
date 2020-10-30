@@ -42,6 +42,7 @@ body {
 
 .menu a:hover {
     color: darkseagreen;
+    cursor: pointer;
 }
 
 .cart-button {
@@ -53,6 +54,7 @@ body {
     font-style: oblique;
     margin-right: 25px;
     border: 1px solid black;
+    cursor: pointer;
 }
 
 .cart-button:hover {
@@ -80,6 +82,7 @@ body {
     text-align: center;
     text-decoration: none;
     color: darkseagreen;
+    cursor: pointer;
 }
 
 .add-button:hover {

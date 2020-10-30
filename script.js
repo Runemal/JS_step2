@@ -5,6 +5,9 @@ const hostDell = new Vue();
 
 Vue.component('goods-item', {
     props: ['good'],
+//    data: {
+//      basket: [],  
+//    },
     template: `
         <div>
             <img src="img/logo.png" height="50" width="50">
@@ -14,6 +17,19 @@ Vue.component('goods-item', {
         </div>
     `,
     methods: {
+//        addProduct(good) {
+//            if (!this.basket.some((gd) => {
+//                    if (gd.id_product === good.id_product) {
+//                        gd.amount++;
+//                        return true;
+//                    }
+//                })) {
+//                this.basket.push({
+//                    ...good,
+//                    amount: 1
+//                });
+//            }
+//        },
         addProduct() {
             hostBus.$emit('addProduct', this.good);
         }
@@ -40,22 +56,30 @@ Vue.component('goods-list', {
 
 Vue.component('basket-item',{
     props: ['good'],
-    template: `<div style="display: flex; justify-content: space-between; ">
+    template: `<div style="display: flex; justify-content: space-between; width: 100%;">
 
                             <img src="img/logo.png" height="50" width="50">
                             <h3>{{ good.product_name }}</h3>
                             <p>Цена: {{ good.price }}</p>
                             <p>Количество: {{ good.amount }}</p>
                             <p>Сумма: {{ good.amount * good.price }}</p>
-                            <button class="del-button" type="button" @click="delProduct(idx)">Удалить</button>
+                            <button class="del-button" type="button" @click="delProduct(good.id_product)">Удалить</button>
 </div>`,
+    methods:{
+        delProduct(id){
+            this.$emit('delProduct', id);
+        }
+    },
 });
 
 Vue.component('header-menu', {
     props: ['basket', 'isCartVisible', 'isCartEmpty', 'cartAmount', 'cartSumm'],
-    //    basketVisy: {
-    //        isCartVisible: false
-    //    },
+    data(){
+      return {
+          isCartVisible: false,
+      }
+    },
+    
     template: ` <div>
                     <div class="header">
                         <div class="logo"><a href="#"><img src="img/logo_crete.png" alt="LOGO"></a></div>
@@ -63,7 +87,7 @@ Vue.component('header-menu', {
                                 <a href="#">Главная</a>
                                 <a href="#">Каталог</a>
                                 <a href="#">Контакты</a>
-                                <button class="cart-button" type="button" @click="isCartVisible = !isCartVisible">Корзина</button>
+                                <button class="cart-button" type="button" @click="toogleVisibleCart">Корзина</button>
                             </div>
                     </div> 
                 
@@ -73,7 +97,7 @@ Vue.component('header-menu', {
                         <h2>Корзина всего товаров {{cartAmount}} на сумму {{cartSumm}} рублей.</h2>
                         <div class="goods-list" v-for="(good, idx) in basket">
 
-<basket-item :good='good'></basket-item>
+<basket-item :good='good' @delProduct="delProduct"></basket-item>
 
                         </div>
 
@@ -82,20 +106,39 @@ Vue.component('header-menu', {
 
 </div>`,
     methods: {
-        delProduct() {
-            hostDell.$emit('delProduct', this.good);
-        }
+        delProduct(id) {
+            this.basket = this.basket.filter(item => {
+//                if (this.basket.length === 0) {
+//                    return this.basket = [];
+//                };
+                return item.id_product !== id;
+            });
+//            this.basket[good.id_product].amount--;
+//            if (this.basket[good.id_product].amount === 0) {
+//                return this.basket.splice(good.id_product, 1);
+//            };
+        },
+
+        toogleVisibleCart(){
+            this.isCartVisible = !this.isCartVisible;
+        },
     },
-    //    mutations: {
-    //        inc(basketVisy){
-    //            basketVisy.isCartVisible = !basketVisy.isCartVisible;
-    //        }
-    //    },
+    computed: {
+        cartSumm() {
+            return this.basket.reduce((summ, good) => summ + good.amount * good.price, 0);
+        },
+        cartAmount() {
+            return this.basket.reduce((summ, good) => summ + good.amount, 0);
+        },
+        isCartEmpty() {
+            return this.basket.length === 0;
+        },
+    },
 });
 
 Vue.component('search-menu',{
     props: ['searchLine'],
-    tempalate: `<div>
+    template: `<div>
                 <form class="form-search">
                     <input type="text" class="goods-search" v-model="searchLine">
                     <input type="button" class="search-button" value="Поиск" id="filter" @click="filterGoods">
@@ -103,13 +146,23 @@ Vue.component('search-menu',{
 
                 </form>
             </div>`,
+    methods: {
+        clearfilterGoods() {
+            this.filteredGoods = this.goods;
+            this.searchLine = '';
+        },
+        filterGoods() {
+            const regex = new RegExp(this.searchLine, 'i');
+            this.$emit('filteredGoods', this.goods.filter(good => good.product_name.match(regex)));
+        },
+    },
 });
 
 let app = new Vue({
     el: '#app',
     template: `<div class="container">
 
-            <header-menu :basket="basket" :isCartVisible="isCartVisible" :isCartEmpty ="isCartEmpty" :cartAmount="cartAmount" :cartSumm="cartSumm" @delProduct="delProduct"></header-menu>
+            <header-menu :basket="basket"></header-menu>
 
 
             <search-menu :searchLine="searchLine" @filterGoods="filterGoods" @clearfilterGoods="clearfilterGoods"></search-menu>
@@ -129,7 +182,6 @@ let app = new Vue({
     data: {
         goods: [],
         filteredGoods: [],
-        isCartVisible: false,
         basket: [],
         searchLine: '',
         footer: '© Все права защищены.',
@@ -169,21 +221,24 @@ let app = new Vue({
             }
         },
 
-        delProduct(idx) {
-            this.basket[idx].amount--;
-            if (this.basket[idx].amount === 0) {
-                this.basket.splice(idx, 1);
-            }
-        },
+//        delProduct(id) {
+//            this.basket = this.basket.filter(item => {
+//                return item.id_product !== id;
+//            });
+//            this.basket[good.id_product].amount--;
+//            if (this.basket[good.id_product].amount === 0) {
+//                this.basket.splice(good.id_product, 1);
+//            };
+//        },
 
-        clearfilterGoods() {
-            this.filteredGoods = this.goods;
-            this.searchLine = '';
-        },
-        filterGoods() {
-            const regex = new RegExp(this.searchLine, 'i');
-            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
-        },
+//        clearfilterGoods() {
+//            this.filteredGoods = this.goods;
+//            this.searchLine = '';
+//        },
+//        filterGoods() {
+//            const regex = new RegExp(this.searchLine, 'i');
+//            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
+//        },
 
     },
 
@@ -192,15 +247,7 @@ let app = new Vue({
         //            const regex = new RegExp(this.searchLine, 'i');
         //            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
         //        },
-        cartSumm() {
-            return this.basket.reduce((summ, good) => summ + good.amount * good.price, 0);
-        },
-        cartAmount() {
-            return this.basket.reduce((summ, good) => summ + good.amount, 0);
-        },
-        isCartEmpty() {
-            return this.basket.length === 0;
-        },
+
 
     },
     created() {
