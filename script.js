@@ -6,7 +6,7 @@ const hostDell = new Vue();
 Vue.component('goods-item', {
     props: ['good'],
 //    data: {
-//      basket: [],  
+//      basket: [],
 //    },
     template: `
         <div>
@@ -79,7 +79,7 @@ Vue.component('header-menu', {
           isCartVisible: false,
       }
     },
-    
+
     template: ` <div>
                     <div class="header">
                         <div class="logo"><a href="#"><img src="img/logo_crete.png" alt="LOGO"></a></div>
@@ -89,8 +89,8 @@ Vue.component('header-menu', {
                                 <a href="#">Контакты</a>
                                 <button class="cart-button" type="button" @click="toogleVisibleCart">Корзина</button>
                             </div>
-                    </div> 
-                
+                    </div>
+
 <div class="cart" v-if="isCartVisible">
                     <h2 v-if="isCartEmpty">Корзина пуста</h2>
                     <div v-else>
@@ -107,17 +107,22 @@ Vue.component('header-menu', {
 </div>`,
     methods: {
         delProduct(id) {
-            this.basket = this.basket.filter(item => {
-//                if (this.basket.length === 0) {
-//                    return this.basket = [];
-//                };
-                return item.id_product !== id;
-            });
-//            this.basket[good.id_product].amount--;
-//            if (this.basket[good.id_product].amount === 0) {
-//                return this.basket.splice(good.id_product, 1);
-//            };
+            const currentProduct = this.basket.find(item => {
+                return item.id_product === id; });
+            if(currentProduct.amount > 1){
+                currentProduct.amount--;
+            }else {
+                this.basket = this.basket.filter(item => {
+                    return item.id_product !== id;
+                });
+            }
         },
+//        delProduct(id) {
+////            this.basket[good.id_product].amount--;
+////            if (this.basket[good.id_product].amount === 0) {
+////                return this.basket.splice(good.id_product, 1);
+////            };
+//        },
 
         toogleVisibleCart(){
             this.isCartVisible = !this.isCartVisible;
@@ -140,7 +145,7 @@ Vue.component('search-menu',{
     props: ['searchLine'],
     template: `<div>
                 <form class="form-search">
-                    <input type="text" class="goods-search" v-model="searchLine">
+                    <input type="text" class="goods-search" v-bind="searchLine">
                     <input type="button" class="search-button" value="Поиск" id="filter" @click="filterGoods">
                     <input class="btn" type="button" value="Очистить поиск" id="clear-filter" @click="clearfilterGoods">
 
@@ -169,7 +174,7 @@ let app = new Vue({
 
             <hr>
             <main class="catalog">
-                
+
                 <goods-list :filteredGoods="filteredGoods" @addProduct="addProduct"></goods-list>
 
             </main>
@@ -221,33 +226,9 @@ let app = new Vue({
             }
         },
 
-//        delProduct(id) {
-//            this.basket = this.basket.filter(item => {
-//                return item.id_product !== id;
-//            });
-//            this.basket[good.id_product].amount--;
-//            if (this.basket[good.id_product].amount === 0) {
-//                this.basket.splice(good.id_product, 1);
-//            };
-//        },
-
-//        clearfilterGoods() {
-//            this.filteredGoods = this.goods;
-//            this.searchLine = '';
-//        },
-//        filterGoods() {
-//            const regex = new RegExp(this.searchLine, 'i');
-//            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
-//        },
-
     },
 
     computed: {
-        //        filterGoods() {
-        //            const regex = new RegExp(this.searchLine, 'i');
-        //            this.filteredGoods = this.goods.filter(good => good.product_name.match(regex));
-        //        },
-
 
     },
     created() {
