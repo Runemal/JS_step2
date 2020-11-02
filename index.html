@@ -1,0 +1,40 @@
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>eShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+            <div>
+                <div>
+        <basket :basket="basket" @delete-product="deleteProducts"></basket>
+        <slot v-if = "sumGoods!==0">Cумма заказа {{sumGoods}}</slot>
+    </div>
+        <form class="form-wrapper">
+            <search-form v-model="searchLine"></search-form>
+            <input class="btn" type="button" value="Найти" id="submit" @click="filterGoods">
+            <input class="btn" type="button" value="Очистить поиск" id="clear-filter" @click="clearfilterGoods">
+        </form>
+    </div>
+
+
+
+    <main>
+        <goods-list :goods="filteredGoods" @add-product="addProducts"></goods-list>
+    </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
