@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>eShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header">
+                <div class="logo"><a href="#"><img src="img/logo_crete.png" alt="LOGO"></a></div>
+                <div class="menu">
+                    <a href="#">Главная</a>
+                    <a href="#">Каталог</a>
+                    <a href="#">Контакты</a>
+                    <button class="cart-button" type="button" @click="isCartVisible = !isCartVisible">Корзина</button>
+                </div>
+
+            </div>
+
+
+            <div>
+                <form class="form-search">
+                <input type="text"  class="goods-search" v-model="searchLine">
+                <input type="button" class="search-button" value="Поиск" id="filter" @click="filterGoods" >
+            <input class="btn" type="button" value="Очистить поиск" id="clear-filter" @click="clearfilterGoods">
+
+                </form>
+            </div>
+            <hr>
+            <main class="catalog">
+               <div class="cart" v-if="isCartVisible">
+                  <h2 v-if="isCartEmpty">Корзина пуста</h2>
+                  <div v-else>
+                   <h2>Корзина всего товаров {{cartAmount}} на сумму {{cartSumm}} рублей.</h2>
+                   <div class="goods-list" v-for="(good, idx) in basket">
+                           <img src="img/logo.png" alt="${this.product_name}" height="50" width="50">
+                            <h3>{{ good.product_name }}</h3>
+                            <p>Цена: {{ good.price }}</p>
+                            <p>Количество: {{ good.amount }}</p>
+                            <p>Сумма: {{ good.amount * good.price }}</p>
+                            <button class="del-button" type="button" @click="delProduct(idx)">Удалить</button>
+                   </div>
+                   
+                   </div>
+               </div>
+                <div class="goods-list">
+                
+                <div v-if="filteredGoods.length > 0">
+                
+                <div class="goods-item" v-for="good in filteredGoods">
+                            <img src="img/logo.png" alt="${this.product_name}" height="50" width="50">
+                            <h3>{{ good.product_name }}</h3>
+                            <p>{{ good.price }}</p>
+                            <button class="add-button" type="add-button" @click="addProduct(good)">Добавить</button>
+                    </div>
+
+                </div>
+                <div v-else>
+                        <span>Нет данных</span>
+                    </div>
+                    
+                    
+                </div>
+            </main>
+
+            <hr>
+            <div id='footer' class="footer">
+                {{ footer }}
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+            <script src="script.js"></script>
+            <!--        <script src="humburger.js"></script>-->
+        </div>
+    </div>
+</body></html>
